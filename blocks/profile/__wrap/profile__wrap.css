@@ -1,0 +1,12 @@
+.profile__wrap {
+  padding-bottom: 16px;
+}
+
+@media screen and (max-width: 767px) {
+  .profile__wrap {
+    padding-bottom: 14px;
+
+    position: relative;
+    left: 16px;
+  }
+}
