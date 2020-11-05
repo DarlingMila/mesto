@@ -1,12 +1,14 @@
 .profile__wrap {
   padding-bottom: 16px;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 @media screen and (max-width: 767px) {
   .profile__wrap {
     padding-bottom: 14px;
-
-    position: relative;
-    left: 16px;
+    padding-left: 44px;
   }
 }
