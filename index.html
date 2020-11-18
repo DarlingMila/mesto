@@ -32,77 +32,64 @@
       <section>
           <ul class="gallery-grid">
 
-            <li class="card">
-              <img class="card__img" src="./images/places/karachaevsk.jpg" alt="Карачаево-Черкессия">
-              <div class="card__footer">
-                <h2 class="card__title">Карачаево-Черкессия</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
-
-            <li class="card">
-              <img class="card__img" src="./images/places/gora-elbrus.jpg" alt="Гора Эльбрус">
-              <div class="card__footer">
-                <h2 class="card__title">Гора Эльбрус</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
-
-            <li class="card">
-              <img class="card__img" src="./images/places/dombay.jpg" alt="Домбай">
-              <div class="card__footer">
-                <h2 class="card__title">Домбай</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
-
-            <li class="card">
-              <img class="card__img" src="./images/places/gora-elbrus.jpg" alt="Гора Эльбрус">
-              <div class="card__footer">
-                <h2 class="card__title">Гора Эльбрус</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
-
-            <li class="card">
-              <img class="card__img" src="./images/places/dombay.jpg" alt="Домбай">
-              <div class="card__footer">
-                <h2 class="card__title">Домбай</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
-
-            <li class="card">
-              <img class="card__img" src="./images/places/karachaevsk.jpg" alt="Карачаево-Черкессия">
-              <div class="card__footer">
-                <h2 class="card__title">Карачаево-Черкессия</h2>
-                <button type="button" class="card__like-button"></button>
-              </div>
-            </li>
+            <template id="card">
+              <li class="card">
+                <button type="button" class="card__bin-button"></button>
+                <img class="card__img" src="" alt="">
+                <div class="card__footer">
+                  <h2 class="card__title"></h2>
+                  <button type="button" class="card__like-button"></button>
+                </div>
+              </li>
+            </template>
 
           </ul>
       </section>
 
     </main>
 
-    <section class="popup">
+    <footer class="footer">
+      <p class="footer__copyright">© 2020 Mesto Russia</p>
+    </footer>
+
+    <section class="popup" id="profile">
     
-      <form class="popup__container" name="profile-form">
+      <form class="popup__container" id="profileContainer" name="profile-form">
         <h2 class="popup__title">Редактировать профиль</h2>
-        <button type="button" class="popup__close-button"></button>
+        <button type="button" class="popup__close-button" id="profileCloseButton"></button>
           <div class="popup__inputs">
             <input type="text" class="popup__input popup__input_type_name" name="name" placeholder="Жак-Ив Кусто">
             <input type="text" class="popup__input popup__input_type_profession" name="profession" placeholder="Исследователь океана">
           </div>
           <button type="submit" class="popup__save-button">Сохранить</button>
       </form>
+
+    </section>
+
+    <section class="popup" id="place">
+
+      <form class="popup__container popup__container_small" id="placeContainer" name="add-form">
+        <h2 class="popup__title">Новое место</h2>
+        <button type="button" class="popup__close-button popup__close-button_small" id="placeCloseButton"></button>
+          <div class="popup__inputs popup__inputs_small">
+            <input type="text" class="popup__input popup__input_type_place" name="place" placeholder="Название">
+            <input type="text" class="popup__input popup__input_type_link" name="link" placeholder="Ссылка на картинку">
+          </div>
+          <button type="submit" class="popup__save-button">Создать</button>
+      </form>
     
     </section>
 
-    <footer class="footer">
-      <p class="footer__copyright">© 2020 Mesto Russia</p>
-    </footer>
+    <section class="popup" id="bigger-img">
 
+     
+     <div class="popup__bigger-img">
+       <button type="button" class="popup__close-button popup__close-button_small" id="imgCloseButton"></button>
+        <img class="popup__img" src="" alt="">
+        <p class="popup__img-title"></p>
+     </div>
+
+    </section>
 
   </div>
 

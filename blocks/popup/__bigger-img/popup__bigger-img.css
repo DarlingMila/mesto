@@ -1,0 +1,7 @@
+.popup__bigger-img {
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+}

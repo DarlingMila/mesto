@@ -1,0 +1,10 @@
+.popup__close-button_small {
+
+}
+
+@media screen and (max-width: 767px) {
+  .popup__close-button_small {
+    top: -25px;
+    right: -25px;
+  }
+}
