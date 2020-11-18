@@ -26,6 +26,34 @@ const initialCards = [
   }
 ]; 
 
+// Profile Form
+let profileOpenButton = document.querySelector('.profile__edit-button');
+let profileCloseButton = document.querySelector('#profileCloseButton');
+
+let formElement = document.querySelector('#profileContainer');
+let formPopup = document.querySelector('#profile');
+
+let profileName = document.querySelector('.profile__name'); 
+let profileProfession = document.querySelector('.profile__profession');
+let inputName = document.querySelector('.popup__input_type_name'); 
+let inputProfession = document.querySelector('.popup__input_type_profession');
+
+// Place Form
+let placeOpenButton = document.querySelector('.profile__add-button');
+let placeCloseButton = document.querySelector('#placeCloseButton');
+
+let placeElement = document.querySelector('#placeContainer');
+let placePopup = document.querySelector('#place');
+
+let placeName = document.querySelector('.popup__input_type_place');
+let placeLink = document.querySelector('.popup__input_type_link');
+
+// Окно просмотра фото
+const imgCloseButton = document.querySelector('#imgCloseButton');
+const imgPopup = document.querySelector('#bigger-img');
+
+
+
 // Добавление карточек из массива
 initialCards.forEach(function (item) {
   const cardTemplate = document.querySelector('#card').content;
@@ -48,7 +76,7 @@ initialCards.forEach(function (item) {
   })
 
   cardElement.querySelector('.card__img').addEventListener('click', function () {
-    document.querySelector("#bigger-img").classList.add('popup_opened');
+    document.querySelector('#bigger-img').classList.add('popup_opened');
     
     document.querySelector('.popup__img').src = item.link;
     document.querySelector('.popup__img-title').textContent = item.name;
@@ -57,18 +85,6 @@ initialCards.forEach(function (item) {
 
   gallery.append(cardElement);
 });
-
-// Profile Form
-let profileOpenButton = document.querySelector('.profile__edit-button');
-let profileCloseButton = document.querySelector('#profileCloseButton');
-
-let formElement = document.querySelector('#profileContainer');
-let formPopup = document.querySelector('#profile');
-
-let profileName = document.querySelector('.profile__name'); 
-let profileProfession = document.querySelector('.profile__profession');
-let inputName = document.querySelector('.popup__input_type_name'); 
-let inputProfession = document.querySelector('.popup__input_type_profession');
 
 // Profile Form
 function profileOpenPopup() {
@@ -91,36 +107,15 @@ function formSubmitHandler(event) {
   profileClosePopup();
 }
 
-// Profile Form
-profileOpenButton.addEventListener('click', profileOpenPopup);
-profileCloseButton.addEventListener('click', profileClosePopup);
-
-formElement.addEventListener('submit', formSubmitHandler);
-
-// Place Form
-let placeOpenButton = document.querySelector('.profile__add-button');
-let placeCloseButton = document.querySelector('#placeCloseButton');
-
-let placeElement = document.querySelector('#placeContainer');
-let placePopup = document.querySelector('#place');
-
-let placeName = document.querySelector('.popup__input_type_place');
-let placeLink = document.querySelector('.popup__input_type_link');
-
 // Place Form
 function placeClosePopup() {
   placePopup.classList.remove('popup_opened');
 }
 
-placeCloseButton.addEventListener('click', placeClosePopup);
-
 function placeOpenPopup() {
   placePopup.classList.add('popup_opened');
 }
 
-placeOpenButton.addEventListener('click', placeOpenPopup);
-
-// Place Form 
 function createCard(name, link) {
   const element = document.querySelector('#card').content.cloneNode(true);
 
@@ -158,7 +153,6 @@ function addCard(container, cardElement) {
  placeLink.value = '';
 }
 
-
 function placeSubmitHandler(event) {
   event.preventDefault();
 
@@ -167,18 +161,23 @@ function placeSubmitHandler(event) {
   placeClosePopup();
 }
 
-// Place Form
-placeElement.addEventListener('submit', placeSubmitHandler);
-
-// Закрытие окна просмотра
-const imgCloseButton = document.querySelector("#imgCloseButton");
-const imgPopup = document.querySelector("#bigger-img");
-
+// Закрытие окна просмотра фото
 function imgClosePopup() {
   imgPopup.classList.remove('popup_opened');
 }
 
+
+// Profile Form
+profileOpenButton.addEventListener('click', profileOpenPopup);
+profileCloseButton.addEventListener('click', profileClosePopup);
+
+formElement.addEventListener('submit', formSubmitHandler);
+
+// Place Form
+placeCloseButton.addEventListener('click', placeClosePopup);
+placeOpenButton.addEventListener('click', placeOpenPopup);
+
+placeElement.addEventListener('submit', placeSubmitHandler);
+
+// Закрытие окна просмотра фото
 imgCloseButton.addEventListener('click', imgClosePopup);
-
-
-
