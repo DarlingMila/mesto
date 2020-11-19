@@ -2,18 +2,28 @@
   list-style: none;
   padding: 0;
 
-  /* max-width: 1280px; */
-
   margin: 0 auto;
   width: 100%;
 
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(282px, 1fr));
+  grid-template-columns: repeat(3, minmax(282px, 1fr));
   gap: 17px;
+
+  justify-items: center;
+}
+
+@media screen and (max-width: 1079px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(282px, 1fr));
+
+    gap: 20px;
+  }
 }
 
 @media screen and (max-width: 767px) {
   .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(282px, 1fr));
+
     width: calc(100% - 19px*2);
 
     gap: 20px;

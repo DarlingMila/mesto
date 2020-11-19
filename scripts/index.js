@@ -53,49 +53,24 @@ const imgCloseButton = document.querySelector('#imgCloseButton');
 const imgPopup = document.querySelector('#bigger-img');
 
 
+function openPopup(popup) {
+  popup.classList.add('popup_opened');
+}
 
-// Добавление карточек из массива
-initialCards.forEach(function (item) {
-  const cardTemplate = document.querySelector('#card').content;
-  const cardElement = cardTemplate.cloneNode(true);
-
-  cardElement.querySelector('.card__title').textContent = item.name;
-  cardElement.querySelector('.card__img').src = item.link;
-  cardElement.querySelector('.card__img').alt = item.name;
-
-  cardElement.querySelector('.card__like-button').addEventListener('click', function (evt) {
-  evt.target.classList.toggle('card__like-button_active');
-  });
-
-  cardElement.querySelector('.card__bin-button').addEventListener('click', function (evt) {
-    const item = evt.target.closest('.card');
-   
-    if (item) {
-       item.remove();
-    }
-  })
-
-  cardElement.querySelector('.card__img').addEventListener('click', function () {
-    document.querySelector('#bigger-img').classList.add('popup_opened');
-    
-    document.querySelector('.popup__img').src = item.link;
-    document.querySelector('.popup__img-title').textContent = item.name;
-
-  });
-
-  gallery.append(cardElement);
-});
+function closePopup(popup) {
+  popup.classList.remove('popup_opened');
+}
 
 // Profile Form
 function profileOpenPopup() {
-  formPopup.classList.add('popup_opened');
+  openPopup(formPopup);
 
   inputName.value = profileName.textContent;
   inputProfession.value = profileProfession.textContent;
 }
 
 function profileClosePopup() {
-  formPopup.classList.remove('popup_opened');
+  closePopup(formPopup);
 }
 
 function formSubmitHandler(event) {
@@ -109,19 +84,22 @@ function formSubmitHandler(event) {
 
 // Place Form
 function placeClosePopup() {
-  placePopup.classList.remove('popup_opened');
+  closePopup(placePopup);
 }
 
 function placeOpenPopup() {
-  placePopup.classList.add('popup_opened');
+  openPopup(placePopup);
 }
 
 function createCard(name, link) {
   const element = document.querySelector('#card').content.cloneNode(true);
 
+  const elementImg = element.querySelector('.card__img');
+  elementImg.src = link;
+  elementImg.alt = name;
+
   element.querySelector('.card__title').textContent = name;
-  element.querySelector('.card__img').src = link;
-  element.querySelector('.card__img').alt = name;
+
 
   element.querySelector('.card__like-button').addEventListener('click', function (evt) {
     evt.target.classList.toggle('card__like-button_active');
@@ -136,7 +114,7 @@ function createCard(name, link) {
   })
 
   element.querySelector('.card__img').addEventListener('click', function () {
-  document.querySelector("#bigger-img").classList.add('popup_opened');
+  openPopup(document.querySelector('#bigger-img'));  
     
   document.querySelector('.popup__img').src = link;
   document.querySelector('.popup__img-title').textContent = name;
@@ -161,9 +139,14 @@ function placeSubmitHandler(event) {
   placeClosePopup();
 }
 
+// Добавление карточек из массива
+initialCards.forEach(function (item) {
+  gallery.append(createCard(item.name, item.link));
+});
+
 // Закрытие окна просмотра фото
 function imgClosePopup() {
-  imgPopup.classList.remove('popup_opened');
+  closePopup(imgPopup);
 }
 
 
