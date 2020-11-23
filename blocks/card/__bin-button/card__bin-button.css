@@ -18,6 +18,7 @@
   margin: 0;
 
   cursor: pointer;
+  outline: none;
 }
 
 .card__bin-button:hover {
