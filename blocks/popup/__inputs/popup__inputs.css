@@ -10,12 +10,12 @@
   height: 100px;
 
   padding-top: 41px;
-  padding-bottom: 48px;
+  padding-bottom: 60px;
 }
 
 @media screen and (max-width: 767px) {
   .popup__inputs {
     padding-top: 62px;
-    padding-bottom: 45px;
+    padding-bottom: 60px;
   }
 }
