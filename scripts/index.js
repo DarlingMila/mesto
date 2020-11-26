@@ -58,12 +58,15 @@ const imgPopupTitle = imgPopup.querySelector('.popup__img-title');
 function openPopup(popup) {
   popup.classList.add('popup_opened');
 
-  // Закрытие книпкой esc
+  // Закрытие кнопкой esc
   document.addEventListener('keydown', escClose);
 }
 
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
+
+  // Закрытие кнопкой esc
+  document.removeEventListener('keydown', escClose);
 }
 
 // Profile Form
