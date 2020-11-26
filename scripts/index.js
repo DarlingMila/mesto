@@ -51,10 +51,15 @@ let placeLink = document.querySelector('.popup__input_type_link');
 // Окно просмотра фото
 const imgCloseButton = document.querySelector('#imgCloseButton');
 const imgPopup = document.querySelector('#bigger-img');
+const imgPopupPicture = imgPopup.querySelector('.popup__img');
+const imgPopupTitle = imgPopup.querySelector('.popup__img-title');
 
 
 function openPopup(popup) {
   popup.classList.add('popup_opened');
+
+  // Закрытие книпкой esc
+  document.addEventListener('keydown', escClose);
 }
 
 function closePopup(popup) {
@@ -113,11 +118,11 @@ function createCard(name, link) {
     }
   })
 
-  element.querySelector('.card__img').addEventListener('click', function () {
-  openPopup(document.querySelector('#bigger-img'));  
-    
-  document.querySelector('.popup__img').src = link;
-  document.querySelector('.popup__img-title').textContent = name;
+  elementImg.addEventListener('click', function () {
+    openPopup(imgPopup);  
+      
+    imgPopupPicture.src = link;
+    imgPopupTitle.textContent = name;
 
   });
  
@@ -152,9 +157,8 @@ function imgClosePopup() {
 // Закрытие книпкой esc
 function escClose(evt) {
   if (evt.key === 'Escape') {
-    profileClosePopup();
-    placeClosePopup();
-    imgClosePopup();
+    const popup = document.querySelector('.popup_opened');
+    closePopup(popup);
   }
 }
 
@@ -164,68 +168,6 @@ function closeOnOverlay(evt) {
     evt.target.classList.remove('popup_opened');
   }
 };
-
-//Валидация форм
-function showError(form, input, config) {
-  const error = form.querySelector(`#${input.id}-error`);
-  error.textContent = input.validationMessage;
-  input.classList.add(config.inputErrorClass);
-}
-
-function hideError(form, input, config) {
-  const error = form.querySelector(`#${input.id}-error`);
-  error.textContent = '';
-  input.classList.remove(config.inputErrorClass);
-}
-
-function checkInputValidity(form, input, config) {
-    if (!input.validity.valid) {
-      showError(form, input, config);
-    } else {
-      hideError(form, input, config);
-    }
-}
-
-function setButtonState(button, isActive, config) {
-  if (isActive) {
-    button.classList.remove(config.inactiveButtonClass);
-    button.disabled = false;
-  } else {
-    button.classList.add(config.inactiveButtonClass);
-    button.disabled = true;
-  }
-}
-
-function setEventListeners(form, config) {
-  const inputsList = form.querySelectorAll(config.inputSelector);
-  const submitButton = form.querySelector(config.submitButtonSelector);
-
-    inputsList.forEach((input) => {
-    input.addEventListener('input', () => {
-      checkInputValidity(form, input, config);
-      setButtonState(submitButton, form.checkValidity(), config);
-    });
-    
-  });
-}
-
-function enableValidation(config) {
-  const forms = document.querySelectorAll(config.formSelector);
-
-  forms.forEach((form) => {
-    setEventListeners(form, config);
-
-    form.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-    });
-
-    const submitButton = form.querySelector(config.submitButtonSelector);
-    setButtonState(submitButton, form.checkValidity(), config);
-  });
-}
-
-//Валидация форм
-enableValidation(validationConfig);
 
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
@@ -241,9 +183,6 @@ placeElement.addEventListener('submit', placeSubmitHandler);
 
 // Закрытие окна просмотра фото
 imgCloseButton.addEventListener('click', imgClosePopup);
-
-// Закрытие книпкой esc
-document.addEventListener('keydown', escClose);
 
 // Закрытие кликом на оверлей
 document.addEventListener('mousedown', closeOnOverlay);
