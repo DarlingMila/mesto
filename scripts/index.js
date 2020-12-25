@@ -1,3 +1,8 @@
+import Card from './../scripts/Cards.js'
+
+import { validationConfig } from './../scripts/validate.js';
+import FormValidation from './../scripts/FormValidation.js';
+
 const gallery = document.querySelector('.gallery-grid');
 const initialCards = [
  {
@@ -25,6 +30,14 @@ const initialCards = [
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
   }
 ]; 
+
+
+// Валидация форм
+const placeEdit = document.querySelector('#placeContainer');
+const placeFormValidation = new FormValidation(validationConfig, placeEdit);
+
+const profileEdit = document.querySelector('#profileContainer');
+const profileFormValidation = new FormValidation(validationConfig, profileEdit);
 
 // Profile Form
 let profileOpenButton = document.querySelector('.profile__edit-button');
@@ -69,6 +82,32 @@ function closePopup(popup) {
   document.removeEventListener('keydown', escClose);
 }
 
+// Добавление карточек
+initialCards.forEach((item) => {
+  const card = new Card(item.name, item.link);
+  const cardElement = card.generateCard();
+
+  gallery.prepend(cardElement);
+});
+
+function addCard(container, cardElement) {
+  container.prepend(cardElement);
+ 
+  placeName.value = '';
+  placeLink.value = '';
+}
+
+function placeSubmitHandler(event) {
+  event.preventDefault();
+
+  const card = new Card(placeName.value, placeLink.value);
+  const cardElement = card.generateCard();
+
+  addCard(gallery, cardElement);
+  
+  placeClosePopup();
+}
+
 // Profile Form
 function profileOpenPopup() {
   openPopup(formPopup);
@@ -99,59 +138,6 @@ function placeOpenPopup() {
   openPopup(placePopup);
 }
 
-function createCard(name, link) {
-  const element = document.querySelector('#card').content.cloneNode(true);
-
-  const elementImg = element.querySelector('.card__img');
-  elementImg.src = link;
-  elementImg.alt = name;
-
-  element.querySelector('.card__title').textContent = name;
-
-
-  element.querySelector('.card__like-button').addEventListener('click', function (evt) {
-    evt.target.classList.toggle('card__like-button_active');
-  });
-
-  element.querySelector('.card__bin-button').addEventListener('click', function (evt) {
-    const item = evt.target.closest('.card');
-   
-    if (item) {
-       item.remove();
-    }
-  })
-
-  elementImg.addEventListener('click', function () {
-    openPopup(imgPopup);  
-      
-    imgPopupPicture.src = link;
-    imgPopupTitle.textContent = name;
-
-  });
- 
-  return(element);
-}
-
-function addCard(container, cardElement) {
- container.prepend(cardElement);
-
- placeName.value = '';
- placeLink.value = '';
-}
-
-function placeSubmitHandler(event) {
-  event.preventDefault();
-
-  addCard(gallery, createCard(placeName.value, placeLink.value));
-
-  placeClosePopup();
-}
-
-// Добавление карточек из массива
-initialCards.forEach(function (item) {
-  gallery.append(createCard(item.name, item.link));
-});
-
 // Закрытие окна просмотра фото
 function imgClosePopup() {
   closePopup(imgPopup);
@@ -172,6 +158,8 @@ function closeOnOverlay(evt) {
   }
 };
 
+
+
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
 profileCloseButton.addEventListener('click', profileClosePopup);
@@ -189,3 +177,7 @@ imgCloseButton.addEventListener('click', imgClosePopup);
 
 // Закрытие кликом на оверлей
 document.addEventListener('mousedown', closeOnOverlay);
+
+// Валидация форм
+placeFormValidation.enableValidation();
+profileFormValidation.enableValidation();
