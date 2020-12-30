@@ -40,32 +40,32 @@ const profileEdit = document.querySelector('#profileContainer');
 const profileFormValidation = new FormValidation(validationConfig, profileEdit);
 
 // Profile Form
-let profileOpenButton = document.querySelector('.profile__edit-button');
-let profileCloseButton = document.querySelector('#profileCloseButton');
+const profileOpenButton = document.querySelector('.profile__edit-button');
+const profileCloseButton = document.querySelector('#profileCloseButton');
 
-let formElement = document.querySelector('#profileContainer');
-let formPopup = document.querySelector('#profile');
+const formPopup = document.querySelector('#profile');
 
-let profileName = document.querySelector('.profile__name'); 
-let profileProfession = document.querySelector('.profile__profession');
-let inputName = document.querySelector('.popup__input_type_name'); 
-let inputProfession = document.querySelector('.popup__input_type_profession');
+const profileName = document.querySelector('.profile__name'); 
+const profileProfession = document.querySelector('.profile__profession');
+const inputName = document.querySelector('.popup__input_type_name'); 
+const inputProfession = document.querySelector('.popup__input_type_profession');
 
 // Place Form
-let placeOpenButton = document.querySelector('.profile__add-button');
-let placeCloseButton = document.querySelector('#placeCloseButton');
+const placeOpenButton = document.querySelector('.profile__add-button');
+const placeCloseButton = document.querySelector('#placeCloseButton');
 
-let placeElement = document.querySelector('#placeContainer');
-let placePopup = document.querySelector('#place');
+const placeElement = document.querySelector('#placeContainer');
+const placePopup = document.querySelector('#place');
 
-let placeName = document.querySelector('.popup__input_type_place');
-let placeLink = document.querySelector('.popup__input_type_link');
+const placeName = document.querySelector('.popup__input_type_place');
+const placeLink = document.querySelector('.popup__input_type_link');
 
 // Окно просмотра фото
-const imgCloseButton = document.querySelector('#imgCloseButton');
 const imgPopup = document.querySelector('#bigger-img');
 const imgPopupPicture = imgPopup.querySelector('.popup__img');
 const imgPopupTitle = imgPopup.querySelector('.popup__img-title');
+
+const popups = document.querySelectorAll('.popup');
 
 
 function openPopup(popup) {
@@ -83,9 +83,14 @@ function closePopup(popup) {
 }
 
 // Добавление карточек
-initialCards.forEach((item) => {
-  const card = new Card(item.name, item.link);
+function createCard(item) {
+  const card = new Card(item.name, item.link, '#card', handleCardClick);
   const cardElement = card.generateCard();
+  return cardElement
+}
+
+initialCards.forEach((item) => {
+  const cardElement = createCard(item);
 
   gallery.prepend(cardElement);
 });
@@ -100,12 +105,16 @@ function addCard(container, cardElement) {
 function placeSubmitHandler(event) {
   event.preventDefault();
 
-  const card = new Card(placeName.value, placeLink.value);
-  const cardElement = card.generateCard();
-
+  const cardElement = createCard({name: placeName.value, link: placeLink.value, templateSelector: '#card', handleCardClick: handleCardClick});
   addCard(gallery, cardElement);
   
-  placeClosePopup();
+  closePopup(placePopup);
+}
+
+function handleCardClick(link, name) {
+  openPopup(imgPopup);
+  imgPopupPicture.src = link;
+  imgPopupTitle.textContent = name;
 }
 
 // Profile Form
@@ -116,34 +125,21 @@ function profileOpenPopup() {
   inputProfession.value = profileProfession.textContent;
 }
 
-function profileClosePopup() {
-  closePopup(formPopup);
-}
-
 function formSubmitHandler(event) {
   event.preventDefault();
 
   profileName.textContent = inputName.value;
   profileProfession.textContent = inputProfession.value;
 
-  profileClosePopup();
+  closePopup(formPopup);
 }
 
 // Place Form
-function placeClosePopup() {
-  closePopup(placePopup);
-}
-
 function placeOpenPopup() {
   openPopup(placePopup);
 }
 
-// Закрытие окна просмотра фото
-function imgClosePopup() {
-  closePopup(imgPopup);
-}
-
-// Закрытие книпкой esc
+// Закрытие кнопкой esc
 function escClose(evt) {
   if (evt.key === 'Escape') {
     const popup = document.querySelector('.popup_opened');
@@ -151,32 +147,28 @@ function escClose(evt) {
   }
 }
 
-// Закрытие кликом на оверлей
-function closeOnOverlay(evt) {
-  if (evt.target.classList.contains('popup')) {
-    evt.target.classList.remove('popup_opened');
-  }
-};
-
+// Закрытие попаов
+popups.forEach((popup) => {
+    popup.addEventListener('click', (evt) => {
+        if (evt.target.classList.contains('popup_opened')) {
+            closePopup(popup);
+        }
+        if (evt.target.classList.contains('popup__close-button')) {
+          closePopup(popup);
+        } 
+    })
+}) 
 
 
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
-profileCloseButton.addEventListener('click', profileClosePopup);
 
-formElement.addEventListener('submit', formSubmitHandler);
+profileEdit.addEventListener('submit', formSubmitHandler);
 
 // Place Form
-placeCloseButton.addEventListener('click', placeClosePopup);
 placeOpenButton.addEventListener('click', placeOpenPopup);
 
 placeElement.addEventListener('submit', placeSubmitHandler);
-
-// Закрытие окна просмотра фото
-imgCloseButton.addEventListener('click', imgClosePopup);
-
-// Закрытие кликом на оверлей
-document.addEventListener('mousedown', closeOnOverlay);
 
 // Валидация форм
 placeFormValidation.enableValidation();
