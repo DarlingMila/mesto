@@ -28,7 +28,9 @@ export default class Card {
 
     this._element.querySelector('.card__bin-button').addEventListener('click', this._handleBinButton);
 
-    this._cardImage.addEventListener('click', this._openBigPicture);
+    this._cardImage.addEventListener('click', () => {
+      this._handleCardClick(this._link, this._name);
+    });
   }
 
   _handleLikeButton(evt) { 

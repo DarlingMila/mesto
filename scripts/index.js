@@ -105,7 +105,7 @@ function addCard(container, cardElement) {
 function placeSubmitHandler(event) {
   event.preventDefault();
 
-  const cardElement = createCard({name: placeName.value, link: placeLink.value, templateSelector: '#card', handleCardClick: handleCardClick});
+  const cardElement = createCard({name: placeName.value, link: placeLink.value});
   addCard(gallery, cardElement);
   
   closePopup(placePopup);
