@@ -1,3 +1,5 @@
+import './../pages/index.css';
+
 import Card from './../scripts/Cards.js';
 import Section from './../scripts/Section.js';
 import Popup from './../scripts/Popup.js';
