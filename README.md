@@ -6,7 +6,7 @@ Mesto - это площадка, где делятся прекрасными ф
 
 В проекте используется JavaScript.
 
-**Ссылка на сайт:** https://darlingmila.github.io/mesto/dist/index.html
+**Ссылка на сайт:** https://darlingmila.github.io/mesto/index.html
 
 ***
 
