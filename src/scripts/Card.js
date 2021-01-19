@@ -7,7 +7,7 @@ export default class Card {
   }
 
   _getTemplate() {
-    const cardElement = document.querySelector(this._templateSelector).content.cloneNode(true);
+    const cardElement = document.querySelector(this._templateSelector).content.querySelector('.card').cloneNode(true);
 
     return cardElement;
   }
@@ -31,6 +31,8 @@ export default class Card {
     this._cardImage.addEventListener('click', () => {
       this._handleCardClick(this._link, this._name);
     });
+
+    this._element.remove();
   }
 
   _handleLikeButton(evt) { 
@@ -43,6 +45,7 @@ export default class Card {
      if (item) {
         item.remove();
     }
+
   }
 
 }

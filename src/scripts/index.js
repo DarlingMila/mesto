@@ -1,6 +1,6 @@
 import './../pages/index.css';
 
-import Card from './../scripts/Cards.js';
+import Card from './../scripts/Card.js';
 import Section from './../scripts/Section.js';
 import Popup from './../scripts/Popup.js';
 import PopupWithImage from './../scripts/PopupWithImage.js';
@@ -11,34 +11,10 @@ import UserInfo from './../scripts/UserInfo.js';
 import { validationConfig } from './../scripts/validate.js';
 import FormValidation from './../scripts/FormValidation.js';
 
-const gallery = document.querySelector('.gallery-grid');
-const initialCards = [
- {
-   name: 'Архыз',
-   link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
- {
-   name: 'Челябинская область',
-   link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {   
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-]; 
+import { initialCards } from './initialCards.js'
+import { imgPopup } from './constants.js';
 
+const gallery = document.querySelector('.gallery-grid');
 
 // Валидация форм
 const placeEdit = document.querySelector('#placeContainer');
@@ -49,7 +25,6 @@ const profileFormValidation = new FormValidation(validationConfig, profileEdit);
 
 // Profile Form
 const profileOpenButton = document.querySelector('.profile__edit-button');
-const profileCloseButton = document.querySelector('#profileCloseButton');
 
 const formPopup = document.querySelector('#profile');
 
@@ -60,7 +35,6 @@ const inputProfession = document.querySelector('.popup__input_type_profession');
 
 // Place Form
 const placeOpenButton = document.querySelector('.profile__add-button');
-const placeCloseButton = document.querySelector('#placeCloseButton');
 
 const placeElement = document.querySelector('#placeContainer');
 const placePopup = document.querySelector('#place');
@@ -68,12 +42,9 @@ const placePopup = document.querySelector('#place');
 const placeName = document.querySelector('.popup__input_type_place');
 const placeLink = document.querySelector('.popup__input_type_link');
 
-// Окно просмотра фото
-const imgPopup = document.querySelector('#bigger-img');
-const imgPopupPicture = imgPopup.querySelector('.popup__img');
-const imgPopupTitle = imgPopup.querySelector('.popup__img-title');
 
-const popups = document.querySelectorAll('.popup');
+const pictureOpen = new PopupWithImage(imgPopup);
+pictureOpen.setEventListeners();
 
 const profileFormPopup = new PopupWithForm (formPopup);
 profileFormPopup.setEventListeners();
@@ -81,54 +52,56 @@ profileFormPopup.setEventListeners();
 const placeFormPopup = new PopupWithForm (placePopup);
 placeFormPopup.setEventListeners();
 
+function createCard (item) {
+  const card = new Card(item.name, item.link, '#card', handleCardClick);
+  const cardElement = card.generateCard();
+  defaultCards.addItem(cardElement);
+}
+
 const defaultCards = new Section({
  items: initialCards,
  renderer: (item) => {
-   const card = new Card(item.name, item.link, '#card', handleCardClick);
-   const cardElement = card.generateCard();
-   defaultCards.addItem(cardElement);
+  createCard(item);
  }
 }, '.gallery-grid');
 
 defaultCards.rendererItems();
 
-function addCard(container, cardElement) {
-  container.prepend(cardElement);
- 
-  placeName.value = '';
-  placeLink.value = '';
+function addCard(cardElement) {
+  defaultCards.addItem(cardElement);
 }
 
 function placeSubmitHandler(event) {
   event.preventDefault();
 
   const cardElement = createCard({name: placeName.value, link: placeLink.value});
-  addCard(gallery, cardElement);
+  addCard(cardElement);
 
   placeFormPopup.close();
 }
 
 function handleCardClick(link, name) {
-  const pictureOpen = new PopupWithImage(imgPopup);
   pictureOpen.open(link, name);
-  pictureOpen.setEventListeners();
 }
 
 // Profile Form
 const profileForm = new UserInfo({
-  name: profileName.textContent,
-  profession: profileProfession.textContent,
+  name: profileName,
+  profession: profileProfession,
 });
 
 
 function profileOpenPopup() {
   profileFormPopup.open();
+
+  inputName.value = profileName.textContent;
+  inputProfession.value = profileProfession.textContent;
 }
 
-function formSubmitHandler(event) {
+function submitProfileForm(event) {
   event.preventDefault();
 
-  profileForm.setUserInfo();
+  profileForm.setUserInfo(inputName.value, inputProfession.value);
 
   profileFormPopup.close();
 }
@@ -141,7 +114,7 @@ function placeOpenPopup() {
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
 
-profileEdit.addEventListener('submit', formSubmitHandler);
+profileEdit.addEventListener('submit', submitProfileForm);
 
 // Place Form
 placeOpenButton.addEventListener('click', placeOpenPopup);

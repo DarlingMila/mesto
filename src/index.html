@@ -30,18 +30,6 @@
 
       <section>
           <ul class="gallery-grid">
-
-            <template id="card">
-              <li class="card">
-                <button type="button" class="card__bin-button"></button>
-                <img class="card__img" src="/" alt="/">
-                <div class="card__footer">
-                  <h2 class="card__title"></h2>
-                  <button type="button" class="card__like-button"></button>
-                </div>
-              </li>
-            </template>
-
           </ul>
       </section>
 
@@ -58,10 +46,10 @@
         <button type="button" class="popup__close-button" id="profileCloseButton"></button>
           <div class="popup__inputs">
 
-            <input id="name-input" type="text" class="popup__input popup__input_type_name" name="name" placeholder="Жак-Ив Кусто" minlength="2" maxlength="40" required>
+            <input id="name-input" type="text" class="popup__input popup__input_type_name" name="name" placeholder="Введите имя" minlength="2" maxlength="40" required>
             <span id="name-input-error" class="popup__error"></span>
 
-            <input id="profession-input" type="text" class="popup__input popup__input_type_profession" name="profession" placeholder="Исследователь океана" minlength="2" maxlength="200" required>
+            <input id="profession-input" type="text" class="popup__input popup__input_type_profession" name="profession" placeholder="Введите профессию" minlength="2" maxlength="200" required>
             <span id="profession-input-error" class="popup__error"></span>
 
           </div>
@@ -99,6 +87,17 @@
      </div>
 
     </section>
+
+    <template id="card">
+      <li class="card">
+        <button type="button" class="card__bin-button"></button>
+        <img class="card__img" src="/" alt="/">
+        <div class="card__footer">
+          <h2 class="card__title"></h2>
+          <button type="button" class="card__like-button"></button>
+        </div>
+      </li>
+    </template>
 
   </div>
 
