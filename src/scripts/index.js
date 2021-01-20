@@ -14,8 +14,6 @@ import FormValidation from './../scripts/FormValidation.js';
 import { initialCards } from './initialCards.js'
 import { imgPopup } from './constants.js';
 
-const gallery = document.querySelector('.gallery-grid');
-
 // Валидация форм
 const placeEdit = document.querySelector('#placeContainer');
 const placeFormValidation = new FormValidation(validationConfig, placeEdit);
@@ -36,44 +34,43 @@ const inputProfession = document.querySelector('.popup__input_type_profession');
 // Place Form
 const placeOpenButton = document.querySelector('.profile__add-button');
 
-const placeElement = document.querySelector('#placeContainer');
 const placePopup = document.querySelector('#place');
 
 const placeName = document.querySelector('.popup__input_type_place');
 const placeLink = document.querySelector('.popup__input_type_link');
 
-
+// Попап с картинкой
 const pictureOpen = new PopupWithImage(imgPopup);
 pictureOpen.setEventListeners();
 
-const profileFormPopup = new PopupWithForm (formPopup);
+// Profile Form
+const profileFormPopup = new PopupWithForm (formPopup, submitProfileForm);
 profileFormPopup.setEventListeners();
 
-const placeFormPopup = new PopupWithForm (placePopup);
+// Place Form
+const placeFormPopup = new PopupWithForm (placePopup, placeSubmitHandler);
 placeFormPopup.setEventListeners();
 
 function createCard (item) {
   const card = new Card(item.name, item.link, '#card', handleCardClick);
   const cardElement = card.generateCard();
-  defaultCards.addItem(cardElement);
+  return cardElement;
 }
 
 const defaultCards = new Section({
  items: initialCards,
  renderer: (item) => {
-  createCard(item);
+  defaultCards.addItem(createCard(item));
  }
 }, '.gallery-grid');
 
 defaultCards.rendererItems();
 
 function addCard(cardElement) {
-  defaultCards.addItem(cardElement);
+  defaultCards.addItem(cardElement, true);
 }
 
-function placeSubmitHandler(event) {
-  event.preventDefault();
-
+function placeSubmitHandler() {
   const cardElement = createCard({name: placeName.value, link: placeLink.value});
   addCard(cardElement);
 
@@ -85,7 +82,7 @@ function handleCardClick(link, name) {
 }
 
 // Profile Form
-const profileForm = new UserInfo({
+const userInformation = new UserInfo({
   name: profileName,
   profession: profileProfession,
 });
@@ -94,14 +91,12 @@ const profileForm = new UserInfo({
 function profileOpenPopup() {
   profileFormPopup.open();
 
-  inputName.value = profileName.textContent;
-  inputProfession.value = profileProfession.textContent;
+  inputName.value = userInformation.getUserInfo().name.textContent;
+  inputProfession.value = userInformation.getUserInfo().profession.textContent;
 }
 
-function submitProfileForm(event) {
-  event.preventDefault();
-
-  profileForm.setUserInfo(inputName.value, inputProfession.value);
+function submitProfileForm() {
+  userInformation.setUserInfo(inputName.value, inputProfession.value);
 
   profileFormPopup.close();
 }
@@ -114,12 +109,8 @@ function placeOpenPopup() {
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
 
-profileEdit.addEventListener('submit', submitProfileForm);
-
 // Place Form
 placeOpenButton.addEventListener('click', placeOpenPopup);
-
-placeElement.addEventListener('submit', placeSubmitHandler);
 
 // Валидация форм
 placeFormValidation.enableValidation();

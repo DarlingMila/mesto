@@ -26,26 +26,21 @@ export default class Card {
   _setEventListeners() {
     this._element.querySelector('.card__like-button').addEventListener('click', this._handleLikeButton);
 
-    this._element.querySelector('.card__bin-button').addEventListener('click', this._handleBinButton);
+    this._element.querySelector('.card__bin-button').addEventListener('click', this._handleBinButton.bind(this));
 
     this._cardImage.addEventListener('click', () => {
       this._handleCardClick(this._link, this._name);
     });
 
-    this._element.remove();
   }
 
   _handleLikeButton(evt) { 
     evt.target.classList.toggle('card__like-button_active');
   }
 
-  _handleBinButton(evt) { 
-    const item = evt.target.closest('.card');
-   
-     if (item) {
-        item.remove();
-    }
-
+  _handleBinButton() { 
+    this._element.remove();
+    this._element = null;
   }
 
 }
