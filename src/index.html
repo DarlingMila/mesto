@@ -17,7 +17,9 @@
     <main class="content">
 
       <section class="profile">
-        <img class="profile__avatar" src="<%=require('./images/avatar.jpg')%>" alt="Аватар профиля">
+        <button type="button" class="profile__change-avatar-button">
+          <img class="profile__avatar" src="<%=require('./images/avatar.jpg')%>" alt="Аватар профиля">
+        </button>
         <div class="profile__info">
           <div class="profile__wrap">
             <h1 class="profile__name">Жак-Ив Кусто</h1>
@@ -77,9 +79,36 @@
     
     </section>
 
+    <section class="popup" id="deletePopup">
+
+      <form class="popup__container popup__container_tiny" id="confirmContainer">
+        <h2 class="popup__title popup__title_tiny">Вы уверены?</h2>
+        <button type="button" class="popup__close-button popup__close-button_tiny" id="confirmCloseButton"></button>
+        <button type="submit" class="popup__save-button">Да</button>
+
+      </form>
+
+    </section>
+
+    <section class="popup" id="avatarPopup">
+
+      <form class="popup__container" id="avatarPopupContainer">
+        <h2 class="popup__title">Обновить аватар</h2>
+        <button type="button" class="popup__close-button" id="avatarPopupCloseButton"></button>
+
+        <div class="popup__inputs popup__inputs_tiny">
+          <input id="link-input" type="url" class="popup__input popup__input_type_avatar" name="link" placeholder="Ссылка на картинку" required>
+          <span id="link-input-error" class="popup__error"></span>
+        </div>
+
+        <button type="submit" class="popup__save-button">Сохранить</button>
+
+      </form>
+
+    </section>
+
     <section class="popup" id="bigger-img">
 
-     
      <div class="popup__bigger-img">
        <button type="button" class="popup__close-button popup__close-button_small" id="imgCloseButton"></button>
         <img class="popup__img" src="/" alt="/">
@@ -94,7 +123,10 @@
         <img class="card__img" src="/" alt="/">
         <div class="card__footer">
           <h2 class="card__title"></h2>
-          <button type="button" class="card__like-button"></button>
+          <div class="card__wrap-like">
+            <button type="button" class="card__like-button"></button>
+            <div class="card__like-count"></div>
+          </div>
         </div>
       </li>
     </template>

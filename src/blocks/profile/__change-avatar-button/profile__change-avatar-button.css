@@ -1,0 +1,12 @@
+.profile__change-avatar-button{
+  background-image: url("./../../../images/buttons/edit-button.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: black;
+  background-size: 26px 26px;
+
+  border: none;
+
+  cursor: pointer;
+  outline: none;
+}

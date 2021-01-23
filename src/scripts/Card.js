@@ -1,9 +1,16 @@
 export default class Card {
-  constructor(name, link, templateSelector, handleCardClick) {
-    this._name = name;
-    this._link = link;
+  constructor(data, templateSelector, handleCardClick, {handleBinButton}) {
+    this._name = data.name;
+    this._link = data.link;
+    this._id = data._id;
     this._templateSelector = templateSelector;
     this._handleCardClick = handleCardClick;
+
+    this._handleBinButton = handleBinButton;
+  }
+
+  getId() {
+    return this._id;
   }
 
   _getTemplate() {
@@ -26,7 +33,11 @@ export default class Card {
   _setEventListeners() {
     this._element.querySelector('.card__like-button').addEventListener('click', this._handleLikeButton);
 
-    this._element.querySelector('.card__bin-button').addEventListener('click', this._handleBinButton.bind(this));
+    if (this._handleBinButton) {
+      this._element.querySelector('.card__bin-button').addEventListener('click', this._handleBinButton.bind(this));
+    } else {
+      this._element.querySelector('.card__like-button').remove();
+    }
 
     this._cardImage.addEventListener('click', () => {
       this._handleCardClick(this._link, this._name);
