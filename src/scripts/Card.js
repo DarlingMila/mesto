@@ -1,5 +1,5 @@
 export default class Card {
-  constructor(data, templateSelector, handleCardClick, {handleLikeClick, handleDeleteCard}) {
+  constructor(data, myId, templateSelector, handleCardClick, {handleLikeClick, handleDeleteCard}) {
     this._name = data.name;
     this._link = data.link;
     this._id = data._id;
@@ -12,6 +12,8 @@ export default class Card {
     this._handleLikeClick = handleLikeClick;
 
     this._handleDeleteCard = handleDeleteCard;
+
+    this._myId = myId;
   }
 
   getCardId() {
@@ -35,17 +37,28 @@ export default class Card {
     this._cardImage.alt = this._name;
     this._element.querySelector('.card__title').textContent = this._name;
 
-    this._element.querySelector('.card__like-count').textContent = this._likes.length;
+    if (this._likes) {
+      this._element.querySelector('.card__like-count').textContent = this._likes.length;
+    }
 
     this._setEventListeners();
+    this._checkLikes();
+
     return this._element;
   }
 
+  likeCount() {
+    this._element.querySelector('.card__like-count').textContent = this._likes.length;
+  }
+
   _setEventListeners() {
-    this._element.querySelector('.card__like-button').addEventListener('click', this._handleLikeButton);
+    this._element.querySelector('.card__like-button').addEventListener('click', this._handleLikeClick);
 
-    this._element.querySelector('.card__bin-button').addEventListener('click', this._handleDeleteCard.bind(this));
-
+    if (this._myId === this.getOwner()._id) {
+      this._element.querySelector('.card__bin-button').addEventListener('click', this._handleDeleteCard.bind(this));
+    } else {
+      this._element.querySelector('.card__bin-button').remove();
+    }
 
     this._cardImage.addEventListener('click', () => {
       this._handleCardClick(this._link, this._name);
@@ -55,11 +68,21 @@ export default class Card {
 
   _handleLikeButton(evt) { 
     evt.target.classList.toggle('card__like-button_active');
+    console.log('пуньк');
   }
 
   deleteCard() { 
     this._element.remove();
     this._element = null;
+  }
+
+  _checkLikes() {
+    if(this._likes.includes(this._myId) === true) {
+      this._element.querySelector('.card__like-button').classList.add('.card__like-button_active')
+    } else {
+      this._element.querySelector('.card__like-button').classList.remove('.card__like-button_active')
+    }
+
   }
 
 }

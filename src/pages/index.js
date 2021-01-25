@@ -22,6 +22,21 @@ const api = new Api({
   groupId: 'cohort-19'
 }); 
 
+Promise.all([
+  api.getUserInformation(),
+  api.getInitialCards()
+])
+.then((values) => { 
+  const [userData, initialCards] = values;
+})
+.then((res) => {
+  api.getUserInformation(res);
+})
+.then((res) => {
+  api.getInitialCards(res);
+})
+.catch(err => console.log('Ошибка загрузки страницы'));;
+
 // Валидация форм
 const placeEdit = document.querySelector('#placeContainer');
 const placeFormValidation = new FormValidator(validationConfig, placeEdit);
@@ -43,15 +58,6 @@ const profileProfession = document.querySelector('.profile__profession');
 const inputName = document.querySelector('.popup__input_type_name'); 
 const inputProfession = document.querySelector('.popup__input_type_profession');
 
-const avatar = document.querySelector('.profile__avatar');
-
-const avatarOpenButton = document.querySelector('.profile__change-avatar-button');
-
-const avatarPopup = document.querySelector('#avatarPopup');
-const inputAvatar = document.querySelector('.popup__input_type_avatar');
-
-const deletePopup = document.querySelector('#deletePopup');
-
 // Place Form
 const placeOpenButton = document.querySelector('.profile__add-button');
 
@@ -60,7 +66,17 @@ const placePopup = document.querySelector('#place');
 const placeName = document.querySelector('.popup__input_type_place');
 const placeLink = document.querySelector('.popup__input_type_link');
 
-const binButton = document.querySelector('.card__bin-button');
+
+// Аватар
+const avatarOpenButton = document.querySelector('.profile__change-avatar-button');
+
+const avatarPopup = document.querySelector('#avatarPopup');
+const inputAvatar = document.querySelector('.popup__input_type_avatar');
+
+// Удаление
+const deleteConfirm = document.querySelector('#confirmContainer')
+const deletePopup = document.querySelector('#deletePopup');
+
 
 // Попап с картинкой
 const pictureOpen = new PopupWithImage(imgPopup, '#bigger-img');
@@ -79,39 +95,41 @@ avatarFormPopup.setEventListeners();
 
 // Создание карточки
 const createCard = (data) => {
-  const card = new Card(data, '#card', handleCardClick, {
-    handleLikeClick: (card) => {
+  const card = new Card(data, myId(), '#card', handleCardClick,
+    {
+    handleLikeClick: (evt) => {
+      evt.target.classList.toggle('card__like-button_active');
       const cardLikeButton = document.querySelector('.card__like-button');
 
       if (cardLikeButton.classList.contains('card__like-button_active')) {
         api.putLike(card.getCardId())
-        .then(res => {
-          res.likes.length += 1;
-        })
-        .catch(err => console.log('Ошибка: не ставит лайк'));
+        .then(() => card.likeCount())
+        .catch(() => console.log('Ошибка: поставить лайк'));
       } else {
         api.removeLike(card.getCardId())
-        .then(res => {
-          res.likes.length -= 1;
-        })
-        .catch(err => console.log('Ошибка: не удаляет лайк'));
+        .then(() => card.likeCount())
+        .catch(() => console.log('Ошибка: убрать лайк'));
       }
-      
+ 
     }, 
     handleDeleteCard: () => {
-      if (card.getOwner()._id !== myId()){
 
-        const deleteFormPopup = new PopupConfirm (deletePopup, handleDelete);
-        deleteFormPopup.setEventListeners();
+      const deleteFormPopup = new PopupConfirm (deletePopup, deleteSubmit);
+      deleteFormPopup.setEventListeners();
+      deleteFormPopup.open();
 
-        deleteFormPopup.open();
-
-        function handleDelete() {
-          api.deleteCard(card.getCardId())
-          .then(() => card.deleteCard())
-          .catch(err => console.log('Ошибка при удалении'))
-        }
-
+     function deleteSubmit() {
+       api.deleteCard(card.getCardId())
+       .then(() => {
+        card.deleteCard();
+       })
+       .then(() => {
+        deleteFormPopup.close();
+       })
+       .catch(err => console.log('Ошибка при удалении карточки'))
+       .finally(() => {
+        renderLoading(deleteConfirm);
+       });
       }
 
     }
@@ -121,7 +139,7 @@ const createCard = (data) => {
 }
 
 function myId () {
-  userInformation.getUserId();
+  return userInformation.getUserId();
 }
 
 // Создание разметки
@@ -136,16 +154,6 @@ function addCard(cardElement) {
   cardsList.addItem(cardElement, true);
 }
 
-Promise.all([
-  api.getUserInformation(),
-  api.getInitialCards()
-])    
-.then((values) => { 
-  const [userData, initialCards] = values;
-})
-.catch(err => console.log('Ошибка загрузки страницы'));;
-
-
 api.getInitialCards()
 .then((res) => {
     cardsList.rendererItems(res);
@@ -154,10 +162,11 @@ api.getInitialCards()
 
 
 function placeSubmitHandler() {
-  const cardElement = createCard({name: placeName.value, link: placeLink.value});
-  addCard(cardElement);
-
   api.addNewCard({name: placeName.value, link: placeLink.value})
+  .then((data) => {
+    const cardElement = createCard(data);
+    addCard(cardElement);
+  })
   .then(() => {
     placeFormPopup.close();
   })
@@ -191,40 +200,18 @@ function profileOpenPopup() {
   inputProfession.value = userInformation.getUserInfo().profession.textContent;
 }
 
-
-
-function avatarOpenPopup() {
-  avatarFormPopup.open();
-}
-
-function avatarSubmitHandler() {
-  avatar.src = inputAvatar.value;
-  api.changeUserAvatar(`${inputAvatar.value}`)
-  .then((info) => {
-    userInfo.setUserInfo({
-    userAvatar: info.avatar,
-    })
-  })
-  .then(() => {
-    avatarFormPopup.close();
-  })
-  .catch(err => console.log(`При изменении аватара пользователя: ${err}`))
-  .finally(() => {
-    renderLoading(avatarEdit);
-  });
-}
-
 function submitProfileForm() {
   const newData = {
     name: inputName.value,
     about: inputProfession.value
   }
 
-  userInformation.setUserInfo(newData);
-
   api.changeUserInformation(inputName.value, inputProfession.value)
   .then(() => {
     profileFormPopup.close();
+  })
+  .then(() => {
+    userInformation.setUserInfo(newData);
   })
   .finally(() => {
     renderLoading(profileEdit);
@@ -242,6 +229,29 @@ function renderLoading (popup) {
   const button = popup.querySelector('.popup__save-button');
   button.textContent = 'Сохранение...';
 }
+
+// Avatar Form 
+function avatarOpenPopup() {
+  avatarFormPopup.open();
+}
+
+function avatarSubmitHandler() {
+  api.changeUserAvatar(`${inputAvatar.value}`)
+  .then((res) => {
+    userInformation.setUserInfo(res);
+  })
+  .then((res) => {
+    userInformation.getUserInfo(res);
+  })
+  .then(() => {
+    avatarFormPopup.close();
+  })
+  .catch(err => console.log(`При изменении аватара пользователя: ${err}`))
+  .finally(() => {
+    renderLoading(avatarEdit);
+  });
+}
+
 
 // Profile Form
 profileOpenButton.addEventListener('click', profileOpenPopup);
