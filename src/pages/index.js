@@ -28,14 +28,11 @@ Promise.all([
 ])
 .then((values) => { 
   const [userData, initialCards] = values;
+  userInformation.setUserInfo(userData);
+  cardsList.rendererItems(initialCards);
 })
-.then((res) => {
-  api.getUserInformation(res);
-})
-.then((res) => {
-  api.getInitialCards(res);
-})
-.catch(err => console.log('Ошибка загрузки страницы'));;
+.catch(err => console.log('Ошибка загрузки страницы'));
+
 
 // Валидация форм
 const placeEdit = document.querySelector('#placeContainer');
@@ -98,16 +95,20 @@ const createCard = (data) => {
   const card = new Card(data, myId(), '#card', handleCardClick,
     {
     handleLikeClick: (evt) => {
-      evt.target.classList.toggle('card__like-button_active');
-      const cardLikeButton = document.querySelector('.card__like-button');
 
-      if (cardLikeButton.classList.contains('card__like-button_active')) {
+      if (!card.wasLiked()) {
         api.putLike(card.getCardId())
-        .then(() => card.likeCount())
+        .then((res) => {
+          card.putLikeButton(evt);
+          card.updateLike(res.likes);
+        })
         .catch(() => console.log('Ошибка: поставить лайк'));
       } else {
         api.removeLike(card.getCardId())
-        .then(() => card.likeCount())
+        .then((res) => {
+          card.deleteLikeButton(evt);
+          card.updateLike(res.likes);
+        })
         .catch(() => console.log('Ошибка: убрать лайк'));
       }
  
@@ -122,8 +123,6 @@ const createCard = (data) => {
        api.deleteCard(card.getCardId())
        .then(() => {
         card.deleteCard();
-       })
-       .then(() => {
         deleteFormPopup.close();
        })
        .catch(err => console.log('Ошибка при удалении карточки'))
@@ -154,20 +153,11 @@ function addCard(cardElement) {
   cardsList.addItem(cardElement, true);
 }
 
-api.getInitialCards()
-.then((res) => {
-    cardsList.rendererItems(res);
-})
-.catch(err => console.log('Ошибка при получении карточек'));;
-
-
 function placeSubmitHandler() {
   api.addNewCard({name: placeName.value, link: placeLink.value})
   .then((data) => {
     const cardElement = createCard(data);
     addCard(cardElement);
-  })
-  .then(() => {
     placeFormPopup.close();
   })
   .finally(() => {
@@ -178,14 +168,6 @@ function placeSubmitHandler() {
 function handleCardClick(link, name) {
   pictureOpen.open(link, name);
 }
-
-// Данные пользователя
-api.getUserInformation()
-.then(res => {
-  userInformation.setUserInfo(res);
-})
-.catch(err => console.log('Ошибка при получении данных пользователя'));
-
 
 // Profile Form
 const userInformation = new UserInfo({
@@ -201,17 +183,10 @@ function profileOpenPopup() {
 }
 
 function submitProfileForm() {
-  const newData = {
-    name: inputName.value,
-    about: inputProfession.value
-  }
-
   api.changeUserInformation(inputName.value, inputProfession.value)
-  .then(() => {
+  .then((res) => {
     profileFormPopup.close();
-  })
-  .then(() => {
-    userInformation.setUserInfo(newData);
+    userInformation.setUserInfo(res);
   })
   .finally(() => {
     renderLoading(profileEdit);
@@ -239,13 +214,9 @@ function avatarSubmitHandler() {
   api.changeUserAvatar(`${inputAvatar.value}`)
   .then((res) => {
     userInformation.setUserInfo(res);
-  })
-  .then((res) => {
     userInformation.getUserInfo(res);
-  })
-  .then(() => {
     avatarFormPopup.close();
-  })
+  }) 
   .catch(err => console.log(`При изменении аватара пользователя: ${err}`))
   .finally(() => {
     renderLoading(avatarEdit);

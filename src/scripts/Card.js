@@ -8,12 +8,30 @@ export default class Card {
     this._handleCardClick = handleCardClick;
 
     this._likes = data.likes;
+    this._isLiked = false;
 
     this._handleLikeClick = handleLikeClick;
 
     this._handleDeleteCard = handleDeleteCard;
 
     this._myId = myId;
+  }
+
+  _checkForMyLike() {
+    this._likes.forEach((item) => {
+      if (item._id === this._myId) {
+         this._element.querySelector('.card__like-button').classList.add('card__like-button_active');
+         this._isLiked = true;
+      }
+    })
+  }
+
+  wasLiked() {
+    if (this._isLiked === true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   getCardId() {
@@ -38,16 +56,16 @@ export default class Card {
     this._element.querySelector('.card__title').textContent = this._name;
 
     if (this._likes) {
-      this._element.querySelector('.card__like-count').textContent = this._likes.length;
+      this._likeCount();
+      this._checkForMyLike();
     }
 
     this._setEventListeners();
-    this._checkLikes();
 
     return this._element;
   }
 
-  likeCount() {
+  _likeCount() {
     this._element.querySelector('.card__like-count').textContent = this._likes.length;
   }
 
@@ -66,9 +84,16 @@ export default class Card {
 
   }
 
-  _handleLikeButton(evt) { 
-    evt.target.classList.toggle('card__like-button_active');
-    console.log('пуньк');
+  putLikeButton(evt) { 
+    evt.target.classList.add('card__like-button_active');
+
+    this._isLiked = true;
+  }
+
+  deleteLikeButton(evt) { 
+    evt.target.classList.remove('card__like-button_active');
+
+    this._isLiked = false;
   }
 
   deleteCard() { 
@@ -76,13 +101,8 @@ export default class Card {
     this._element = null;
   }
 
-  _checkLikes() {
-    if(this._likes.includes(this._myId) === true) {
-      this._element.querySelector('.card__like-button').classList.add('.card__like-button_active')
-    } else {
-      this._element.querySelector('.card__like-button').classList.remove('.card__like-button_active')
-    }
-
+  updateLike(likes){
+    this._element.querySelector('.card__like-count').textContent = likes.length;
   }
 
 }
